@@ -14,7 +14,9 @@ function Convert-MpsvXmlToCsv {
     )
 
     # Loading XML from file
+    Write-Verbose -Message "Loading XML...";
     [xml]$xmlData = Get-Content -Path $InputXml -Encoding UTF8;
+    Write-Verbose -Message "XML has been loaded";
 
     if ( [System.String]::IsNullOrEmpty( $OutputCsv ) ) {
         $objXmlDataFile = Get-Item -Path $InputXml;
@@ -23,7 +25,7 @@ function Convert-MpsvXmlToCsv {
 
     # Getting XML with vacancies list
     $xmlVacancies = ($xmlData.ChildNodes | where Name -eq 'VOLNAMISTA').VOLNEMISTO;
-    Write-Verbose -Message "Found $($xmlVacancies.Count) record(s)"
+    Write-Verbose -Message "Found $($xmlVacancies.Count) record(s)";
 
     # Converting XML to CSV
     $arrResultingVacancies = @();
@@ -197,6 +199,7 @@ function Convert-MpsvXmlToCsv {
         $arrResultingVacancies += $objVacancy;
     }
 
+    Write-Verbose -Message "Saving results to output file...";
     $arrResultingVacancies | select `
         BlueCardVmRezervProMk, `    
         VacancyId, `
@@ -240,4 +243,6 @@ function Convert-MpsvXmlToCsv {
         WorkingCardVmRezervProVydanZm, `
         WorkingCardJenDalsiZamZm, `
         RawXmlData | Export-Csv -Force -NoTypeInformation -Encoding UTF8 -Delimiter ';' -Path $OutputCsv;
+
+        Write-Verbose -Message "The results has been saved";
 }
