@@ -23,11 +23,14 @@ function Convert-MpsvXmlToCsv {
 
     # Getting XML with vacancies list
     $xmlVacancies = ($xmlData.ChildNodes | where Name -eq 'VOLNAMISTA').VOLNEMISTO;
+    Write-Verbose -Message "Found $($xmlVacancies.Count) record(s)"
 
     # Converting XML to CSV
     $arrResultingVacancies = @();
-    foreach ($xmlVacancy in $xmlVacancies) {
+    for ( $idxVacancy = 0; $idxVacancy -lt $xmlVacancies.Count; $idxVacancy++ ) {
         
+        Write-Verbose -Message "Processing record $($idxVacancy+1) of $($xmlVacancies.Count)";
+        $xmlVacancy = $xmlVacancies[$idxVacancy];
         $objVacancy = New-Object PSObject -Property ([ordered]@{
 
             # PRACPRAVNI_VZTAH tag skipped due to unknown purpose
